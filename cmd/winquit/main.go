@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -10,11 +11,14 @@ import (
 	"time"
 
 	"github.com/containers/winquit/pkg/winquit"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	logrus.SetLevel(logrus.DebugLevel)
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
+	winquit.SetLogger(logger)
 
 	if len(os.Args) < 2 {
 		printUsage()
@@ -80,22 +84,22 @@ func printUsage() {
 }
 
 func signalServer() {
-	logrus.Info("Server waiting using signal approach")
+	slog.Info("Server waiting using signal approach")
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGTERM)
 	winquit.SimulateSigTermOnQuit(done)
-	logrus.Infof("Received: %v", <-done)
+	slog.Info("Received", "value", <-done)
 }
 
 func simpleServer() {
-	logrus.Info("Server waiting using simple boolean approach")
+	slog.Info("Server waiting using simple boolean approach")
 	done := make(chan bool)
 	winquit.NotifyOnQuit(done)
-	logrus.Infof("Received: %v", <-done)
+	slog.Info("Received", "value", <-done)
 }
 
 func multiServer() {
-	logrus.Info("Server waiting using multiple boolean approach")
+	slog.Info("Server waiting using multiple boolean approach")
 	var chans []chan bool
 
 	for i := 0; i < 5; i++ {
@@ -105,12 +109,12 @@ func multiServer() {
 	}
 
 	for _, channel := range chans {
-		logrus.Infof("Received: %v", <-channel)
+		slog.Info("Received", "value", <-channel)
 	}
 }
 
 func hangServer() {
-	logrus.Info("Hanging server waiting forever")
+	slog.Info("Hanging server waiting forever")
 
 	for {
 		time.Sleep(time.Second * 100)

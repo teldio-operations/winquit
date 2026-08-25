@@ -20,6 +20,29 @@ supporting the blending of os.signal and winquit together (a subset of
 signals provided by os.signal are still relevant and desirable on Windows,
 for example, break handling in console applications).
 
+### Logging
+
+winquit writes a small number of debug messages through the standard library
+`log/slog` package. It uses the logger returned by `slog.Default()`, which drops
+debug messages, so winquit stays quiet until an application asks for them.
+
+Call `SetLogger` to send the messages to a logger of your own:
+
+```golang
+logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+    Level: slog.LevelDebug,
+}))
+winquit.SetLogger(logger)
+```
+
+Pass a nil logger to turn the messages off:
+
+```golang
+winquit.SetLogger(nil)
+```
+
+winquit requires Go 1.21 or later, because `log/slog` first shipped in Go 1.21.
+
 ### Simple server example
 
 The following example demonstrates usage of NotifyOnQuit() to wait for a
@@ -114,26 +137,26 @@ Usage: winquit.exe [COMMAND] [ARG...]
 ```
 PS> .\winquit.exe simple server
 
-time="2023-09-13T23:09:14-05:00" level=info msg="Server waiting using simple boolean approach"
-time="2023-09-13T23:09:14-05:00" level=info msg="Entering loop for quit"
+time=2023-09-13T23:09:14.021-05:00 level=INFO msg="Server waiting using simple boolean approach"
+time=2023-09-13T23:09:14.022-05:00 level=DEBUG msg="Entering loop for quit"
 ```
 
 #### In terminal 2:
 ```
 PS> .\bin\winquit.exe request-quit 13332
 
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 10792"
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 1592"
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 3500"
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 5368"
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 8324"
-time="2023-09-13T23:09:46-05:00" level=debug msg="Closing windows on thread 12852"
+time=2023-09-13T23:09:46.104-05:00 level=DEBUG msg="Closing windows on thread" thread=10792
+time=2023-09-13T23:09:46.104-05:00 level=DEBUG msg="Closing windows on thread" thread=1592
+time=2023-09-13T23:09:46.104-05:00 level=DEBUG msg="Closing windows on thread" thread=3500
+time=2023-09-13T23:09:46.105-05:00 level=DEBUG msg="Closing windows on thread" thread=5368
+time=2023-09-13T23:09:46.105-05:00 level=DEBUG msg="Closing windows on thread" thread=8324
+time=2023-09-13T23:09:46.105-05:00 level=DEBUG msg="Closing windows on thread" thread=12852
 ```
 #### Back in terminal 1:
 
 ```
-time="2023-09-13T23:09:46-05:00" level=debug msg="Received QUIT notification"
-time="2023-09-13T23:09:46-05:00" level=info msg="Received: true"
+time=2023-09-13T23:09:46.107-05:00 level=DEBUG msg="Received QUIT notification"
+time=2023-09-13T23:09:46.107-05:00 level=INFO msg=Received value=true
 ```
 
 
@@ -214,7 +237,17 @@ go build -v -o bin/winquit.exe ./cmd/winquit
 
 ```
 PS> .\build.ps1 test
-go test -v ./test
+go test -v ./...
+?       github.com/containers/winquit/cmd/winquit        [no test files]
+=== RUN   TestLoggerFallsBackToSlogDefault
+--- PASS: TestLoggerFallsBackToSlogDefault (0.00s)
+=== RUN   TestSetLoggerRoutesMessages
+--- PASS: TestSetLoggerRoutesMessages (0.00s)
+=== RUN   TestSetLoggerNilTurnsMessagesOff
+--- PASS: TestSetLoggerNilTurnsMessagesOff (0.00s)
+PASS
+ok      github.com/containers/winquit/pkg/winquit        0.106s
+?       github.com/containers/winquit/pkg/winquit/win32  [no test files]
 === RUN   TestTest
 Running Suite: Test Suite - C:\build\winquit\test
 =======================================================

@@ -27,7 +27,7 @@ function testProject {
     if ((Test-Path -Path .\bin\winquit.exe) -eq $false) {
         buildProject
     }
-    runCommand "go test -v ./test"
+    runCommand "go test -v ./..."
 }
 
 function buildProject {

@@ -9,7 +9,6 @@ import (
 	"syscall"
 
 	"github.com/containers/winquit/pkg/winquit/win32"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/windows"
 )
 
@@ -88,20 +87,20 @@ func messageLoop() {
 	loopTid = windows.GetCurrentThreadId()
 	registerDummyWindow()
 
-	logrus.Debug("Entering loop for quit")
+	logger().Debug("Entering loop for quit")
 	for {
 		ret, msg, err := win32.GetMessage(0, 0, 0)
 		if err != nil {
-			logrus.Debugf("Error receiving win32 message, %s", err.Error())
+			logger().Debug("Error receiving win32 message", "error", err)
 			continue
 		}
 		if ret == 0 {
-			logrus.Debug("Received QUIT notification")
+			logger().Debug("Received QUIT notification")
 			receivers.notifyAll()
 
 			return
 		}
-		logrus.Debugf("Unhandled message: %d", msg.Message)
+		logger().Debug("Unhandled message", "message", msg.Message)
 		win32.TranslateMessage(msg)
 		win32.DispatchMessage(msg)
 	}

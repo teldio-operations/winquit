@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/containers/winquit/pkg/winquit/win32"
-	"github.com/sirupsen/logrus"
 )
 
 func requestQuit(pid int) error {
@@ -15,7 +14,7 @@ func requestQuit(pid int) error {
 	}
 
 	for _, thread := range threads {
-		logrus.Debugf("Closing windows on thread %d", thread)
+		logger().Debug("Closing windows on thread", "thread", thread)
 		win32.CloseThreadWindows(uint32(thread))
 	}
 

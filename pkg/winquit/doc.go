@@ -76,6 +76,22 @@
 //	     }
 //	}
 //
+// # Logging
+//
+// winquit writes a small number of debug messages through the log/slog package.
+// It uses the logger returned by slog.Default(), which drops debug messages, so
+// winquit stays quiet until an application asks for them. Call SetLogger to
+// send the messages to a logger of your own:
+//
+//	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+//	    Level: slog.LevelDebug,
+//	}))
+//	winquit.SetLogger(logger)
+//
+// Pass a nil logger to turn the messages off:
+//
+//	winquit.SetLogger(nil)
+//
 // # How it works
 //
 // Windows GUI applications consist of multiple components (and windows) which
