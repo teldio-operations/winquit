@@ -54,7 +54,8 @@ Pass a nil logger to turn the messages off:
 winquit.SetLogger(nil)
 ```
 
-winquit requires Go 1.21 or later, because `log/slog` first shipped in Go 1.21.
+winquit requires Go 1.24 or later. It uses `log/slog`, which shipped in Go
+1.21, and `slog.DiscardHandler`, which shipped in Go 1.24.
 
 ### Simple server example
 

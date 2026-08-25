@@ -1,6 +1,6 @@
 module github.com/teldio-operations/winquit
 
-go 1.21
+go 1.24
 
 require (
 	github.com/onsi/ginkgo/v2 v2.12.0

@@ -1,7 +1,6 @@
 package winquit
 
 import (
-	"context"
 	"log/slog"
 	"sync/atomic"
 )
@@ -17,7 +16,7 @@ var currentLogger atomic.Pointer[slog.Logger]
 // slog.LevelDebug, so the package stays quiet by default.
 func SetLogger(l *slog.Logger) {
 	if l == nil {
-		l = slog.New(discardHandler{})
+		l = slog.New(slog.DiscardHandler)
 	}
 	currentLogger.Store(l)
 }
@@ -28,10 +27,3 @@ func logger() *slog.Logger {
 	}
 	return slog.Default()
 }
-
-type discardHandler struct{}
-
-func (discardHandler) Enabled(context.Context, slog.Level) bool  { return false }
-func (discardHandler) Handle(context.Context, slog.Record) error { return nil }
-func (discardHandler) WithAttrs([]slog.Attr) slog.Handler        { return discardHandler{} }
-func (discardHandler) WithGroup(string) slog.Handler             { return discardHandler{} }
