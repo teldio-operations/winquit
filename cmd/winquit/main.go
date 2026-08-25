@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/containers/winquit/pkg/winquit"
+	"github.com/teldio-operations/winquit/pkg/winquit"
 )
 
 func main() {

@@ -7,9 +7,22 @@ to SIGTERM signal handling on UNIX derived systems. Additionally, it supports
 the graceful shutdown mechanism employed by Windows system tools, such as
 `taskkill.exe`. See the [How it works](#how-it-works) section for more details.
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/containers/winquit.svg)](https://pkg.go.dev/github.com/containers/winquit)
-[![CI](https://github.com/containers/winquit/actions/workflows/ci.yml/badge.svg)](https://github.com/containers/winquit/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/containers/winquit)](https://goreportcard.com/report/github.com/containers/winquit)
+[![Go Reference](https://pkg.go.dev/badge/github.com/teldio-operations/winquit.svg)](https://pkg.go.dev/github.com/teldio-operations/winquit)
+[![CI](https://github.com/teldio-operations/winquit/actions/workflows/ci.yml/badge.svg)](https://github.com/teldio-operations/winquit/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/teldio-operations/winquit)](https://goreportcard.com/report/github.com/teldio-operations/winquit)
+
+## About this fork
+
+This is a fork of [containers/winquit](https://github.com/containers/winquit). It
+drops the `github.com/sirupsen/logrus` dependency and writes debug messages
+through the standard library `log/slog` package instead. See
+[Logging](#logging) for the details.
+
+The module path names this fork, so you can require it directly:
+
+```bash
+go get github.com/teldio-operations/winquit@v1.2.0
+```
 
 ## Overview
 
@@ -238,7 +251,7 @@ go build -v -o bin/winquit.exe ./cmd/winquit
 ```
 PS> .\build.ps1 test
 go test -v ./...
-?       github.com/containers/winquit/cmd/winquit        [no test files]
+?       github.com/teldio-operations/winquit/cmd/winquit        [no test files]
 === RUN   TestLoggerFallsBackToSlogDefault
 --- PASS: TestLoggerFallsBackToSlogDefault (0.00s)
 === RUN   TestSetLoggerRoutesMessages
@@ -246,8 +259,8 @@ go test -v ./...
 === RUN   TestSetLoggerNilTurnsMessagesOff
 --- PASS: TestSetLoggerNilTurnsMessagesOff (0.00s)
 PASS
-ok      github.com/containers/winquit/pkg/winquit        0.106s
-?       github.com/containers/winquit/pkg/winquit/win32  [no test files]
+ok      github.com/teldio-operations/winquit/pkg/winquit        0.106s
+?       github.com/teldio-operations/winquit/pkg/winquit/win32  [no test files]
 === RUN   TestTest
 Running Suite: Test Suite - C:\build\winquit\test
 =======================================================
@@ -260,7 +273,7 @@ Ran 7 of 7 Specs in 3.082 seconds
 SUCCESS! -- 7 Passed | 0 Failed | 0 Pending | 0 Skipped
 --- PASS: TestTest (3.09s)
 PASS
-ok      github.com/containers/winquit/test        3.234s
+ok      github.com/teldio-operations/winquit/test        3.234s
 ```
 
 ### Building on Linux/Unix 

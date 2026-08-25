@@ -1,4 +1,4 @@
-module github.com/containers/winquit
+module github.com/teldio-operations/winquit
 
 go 1.21
 

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/containers/winquit/pkg/winquit/win32"
+	"github.com/teldio-operations/winquit/pkg/winquit/win32"
 	"golang.org/x/sys/windows"
 )
 

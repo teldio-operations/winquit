@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/containers/winquit/pkg/winquit/win32"
+	"github.com/teldio-operations/winquit/pkg/winquit/win32"
 )
 
 func requestQuit(pid int) error {
